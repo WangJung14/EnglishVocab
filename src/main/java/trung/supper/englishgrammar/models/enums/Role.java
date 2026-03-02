@@ -1,6 +1,8 @@
 package trung.supper.englishgrammar.models.enums;
 
-public enum UserRole {
+public enum Role {
+    ADMIN,
+    TEACHER,
     STUDENT,
-    ADMIN
+    GUEST
 }
