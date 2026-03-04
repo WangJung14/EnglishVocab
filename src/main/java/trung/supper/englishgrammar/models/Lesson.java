@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +26,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import trung.supper.englishgrammar.models.enums.LessonType;
+import trung.supper.englishgrammar.enums.LessonType;
 
 @Entity
 @Table(name = "lessons")

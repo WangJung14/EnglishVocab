@@ -2,8 +2,8 @@ package trung.supper.englishgrammar.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import trung.supper.englishgrammar.models.enums.MembershipType;
-import trung.supper.englishgrammar.models.enums.Role;
+import trung.supper.englishgrammar.enums.MembershipType;
+import trung.supper.englishgrammar.enums.Role;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -31,8 +31,11 @@ public class User {
     @Column(name = "password_hash", length = 255)
     private String passwordHash; // Có thể null nếu đăng nhập qua OAuth2 (Google/Facebook)
 
-    @Column(name = "full_name", length = 100)
-    private String fullName;
+    @Column(name  = "first_name", length = 50)
+    private String firstName;
+
+    @Column(name = "last_name", length = 50)
+    private String lastName;
 
     @Column(name = "avatar_url", columnDefinition = "TEXT")
     private String avatarUrl;

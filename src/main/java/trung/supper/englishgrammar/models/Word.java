@@ -21,8 +21,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import trung.supper.englishgrammar.models.enums.CefrLevel;
-import trung.supper.englishgrammar.models.enums.PartOfSpeech;
+import trung.supper.englishgrammar.enums.CefrLevel;
+import trung.supper.englishgrammar.enums.PartOfSpeech;
 
 @Entity
 @Table(name = "words")

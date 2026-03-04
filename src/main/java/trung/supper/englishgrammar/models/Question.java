@@ -25,7 +25,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import trung.supper.englishgrammar.models.enums.QuestionType;
+import trung.supper.englishgrammar.enums.QuestionType;
 
 @Entity
 @Table(name = "questions")

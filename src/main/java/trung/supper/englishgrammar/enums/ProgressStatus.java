@@ -1,4 +1,4 @@
-package trung.supper.englishgrammar.models.enums;
+package trung.supper.englishgrammar.enums;
 
 public enum ProgressStatus {
     NOT_STARTED, // chua bat dau

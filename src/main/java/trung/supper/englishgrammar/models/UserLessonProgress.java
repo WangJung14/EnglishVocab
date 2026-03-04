@@ -22,7 +22,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import trung.supper.englishgrammar.models.enums.ProgressStatus;
+import trung.supper.englishgrammar.enums.ProgressStatus;
 
 @Entity
 @Table(name = "user_lesson_progress", uniqueConstraints = {
