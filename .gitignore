@@ -30,7 +30,7 @@ build/
 !**/src/test/**/build/
 
 ### Enviroment ###
-.env
+.env.properties
 ### VS Code ###
 .vscode/
 application.yaml
