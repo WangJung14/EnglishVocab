@@ -6,5 +6,5 @@ import trung.supper.englishgrammar.models.User;
 
 import java.util.UUID;
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface IUserRepository extends JpaRepository<User, UUID> {
 }

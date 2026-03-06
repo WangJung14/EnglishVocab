@@ -14,5 +14,5 @@ public class ApiRespone<T> {
     @Builder.Default
     private int code = 1000; // thanh cong
     private String message;
-    private T data;
+    private T result;
 }

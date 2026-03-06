@@ -3,16 +3,21 @@ package trung.supper.englishgrammar.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import trung.supper.englishgrammar.dto.response.UserResponseDTO;
+import trung.supper.englishgrammar.mapper.UserMapper;
 import trung.supper.englishgrammar.models.User;
-import trung.supper.englishgrammar.repositorys.UserRepository;
-import trung.supper.englishgrammar.services.UserService;
+import trung.supper.englishgrammar.repositorys.IUserRepository;
+import trung.supper.englishgrammar.services.IUserService;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements IUserService {
 
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
+    private final UserMapper userMapper;
     @Override
     public UserResponseDTO getMyProfile(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
@@ -26,6 +31,14 @@ public class UserServiceImpl implements UserService {
                 .membershipType(user.getMembershipType().name())
                 .membershipExpiresAt(user.getMembershipExpiresAt())
                 .build();
-    };
+    }
+
+    @Override
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toUserResponseDTO)
+                .collect(Collectors.toList());
+    }
 
 }
