@@ -2,16 +2,13 @@ package trung.supper.englishgrammar.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
-import trung.supper.englishgrammar.enums.MembershipType;
-import trung.supper.englishgrammar.enums.Role;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Builder
-public class UserResponseDTO {
+public class UserResponse {
     private UUID id;
     private String email;
     private String firstName;

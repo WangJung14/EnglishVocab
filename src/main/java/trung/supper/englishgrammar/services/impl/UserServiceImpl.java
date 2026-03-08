@@ -2,7 +2,10 @@ package trung.supper.englishgrammar.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import trung.supper.englishgrammar.dto.response.UserResponseDTO;
+import trung.supper.englishgrammar.dto.request.CreateUserRequest;
+import trung.supper.englishgrammar.dto.response.UserResponse;
+import trung.supper.englishgrammar.enums.MembershipType;
+import trung.supper.englishgrammar.enums.Role;
 import trung.supper.englishgrammar.mapper.UserMapper;
 import trung.supper.englishgrammar.models.User;
 import trung.supper.englishgrammar.repositorys.IUserRepository;
@@ -18,10 +21,11 @@ public class UserServiceImpl implements IUserService {
 
     private final IUserRepository userRepository;
     private final UserMapper userMapper;
+
     @Override
-    public UserResponseDTO getMyProfile(UUID userId) {
+    public UserResponse getMyProfile(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
-        return UserResponseDTO.builder()
+        return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
@@ -34,11 +38,33 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<UserResponseDTO> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
                 .stream()
                 .map(userMapper::toUserResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponse createUser(CreateUserRequest createUserRequest) {
+        // TODO: Implement password encoding with BCryptPasswordEncoder
+        // String encodedPassword =
+        // bCryptPasswordEncoder.encode(createUserRequest.getPassword());
+        String encodedPassword = createUserRequest.getPassword();
+
+        User newUser = User.builder()
+                .email(createUserRequest.getEmail())
+                .phoneNumber(createUserRequest.getPhoneNumber())
+                .passwordHash(encodedPassword)
+                .firstName(createUserRequest.getFirstName())
+                .lastName(createUserRequest.getLastName())
+                .role(Role.STUDENT) // Default role
+                .membershipType(MembershipType.FREE) // Default membership
+                .isActive(true)
+                .build();
+
+        User savedUser = userRepository.save(newUser);
+        return userMapper.toUserResponseDTO(savedUser);
     }
 
 }

@@ -28,6 +28,9 @@ public class User {
     @Column(unique = true, nullable = false, length = 255)
     private String email;
 
+    @Column(unique = true,nullable = false,length = 11)
+    private String phoneNumber;
+
     @Column(name = "password_hash", length = 255)
     private String passwordHash; // Có thể null nếu đăng nhập qua OAuth2 (Google/Facebook)
 

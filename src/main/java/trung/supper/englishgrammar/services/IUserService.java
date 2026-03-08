@@ -1,13 +1,17 @@
 package trung.supper.englishgrammar.services;
 
-import org.springframework.stereotype.Service;
-import trung.supper.englishgrammar.dto.response.UserResponseDTO;
+import trung.supper.englishgrammar.dto.request.CreateUserRequest;
+import trung.supper.englishgrammar.dto.response.UserResponse;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface IUserService {
 
-    public UserResponseDTO getMyProfile(UUID userId);
-    public List<UserResponseDTO> getAllUsers();
+    public UserResponse getMyProfile(UUID userId);
+
+    public List<UserResponse> getAllUsers();
+
+    public UserResponse createUser(CreateUserRequest createUserRequest);
+
 }
