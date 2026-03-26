@@ -1,6 +1,5 @@
 package trung.supper.englishgrammar.controller;
 
-import com.cloudinary.Cloudinary;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,13 +19,13 @@ public class FileUploadController {
 
     @PostMapping("/upload/image")
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file,
-                                         @RequestParam("folder") String folderName) throws IOException {
+            @RequestParam("folder") String folderName) throws IOException {
         return ResponseEntity.ok(cloudinaryService.uploadFile(file, folderName));
     }
 
     @PostMapping("/upload/video")
     public ResponseEntity<?> uploadVideo(@RequestParam("file") MultipartFile file,
-                                         @RequestParam("folder") String folderName) throws IOException {
+            @RequestParam("folder") String folderName) throws IOException {
         return ResponseEntity.ok(cloudinaryService.uploadVideo(file, folderName));
     }
 }

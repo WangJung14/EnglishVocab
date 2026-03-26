@@ -10,6 +10,8 @@ import trung.supper.englishgrammar.mapper.UserMapper;
 import trung.supper.englishgrammar.models.User;
 import trung.supper.englishgrammar.repositorys.IUserRepository;
 import trung.supper.englishgrammar.services.IUserService;
+import trung.supper.englishgrammar.enums.ErrorCode;
+import trung.supper.englishgrammar.exception.AppException;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +26,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserResponse getMyProfile(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -70,7 +72,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponse searchUserByEmail(String email) {
         User user = userRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
         return userMapper.toUserResponseDTO(user);
     }
 

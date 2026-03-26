@@ -40,19 +40,12 @@ public class UserController {
 
     @GetMapping("/{email}")
     ApiRespone<UserResponse> searchUserByEmail(@PathVariable String email) {
-        try {
-            UserResponse userResponse = userService.searchUserByEmail(email);
-            return ApiRespone.<UserResponse>builder()
-                    .result(userResponse)
-                    .code(1000)
-                    .message("success")
-                    .build();
-        } catch (RuntimeException e) {
-            return ApiRespone.<UserResponse>builder()
-                    .code(1001)
-                    .message("user not found")
-                    .build();
-        }
+        UserResponse userResponse = userService.searchUserByEmail(email);
+        return ApiRespone.<UserResponse>builder()
+                .result(userResponse)
+                .code(1000)
+                .message("success")
+                .build();
     }
 
 }
