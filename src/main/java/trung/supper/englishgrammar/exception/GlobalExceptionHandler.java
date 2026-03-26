@@ -23,6 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ApiRespone<?>> handlingRuntimeException(Exception exception) {
+        // exception.printStackTrace(); // debug
         ApiRespone<?> apiResponse = ApiRespone.builder()
                 .code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
                 .message(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage())
