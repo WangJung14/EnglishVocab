@@ -10,6 +10,7 @@ import trung.supper.englishgrammar.dto.request.RegisterRequest;
 import trung.supper.englishgrammar.dto.response.AuthResponse;
 import trung.supper.englishgrammar.enums.ErrorCode;
 import trung.supper.englishgrammar.exception.AppException;
+import trung.supper.englishgrammar.mapper.AuthMapper;
 import trung.supper.englishgrammar.models.RefreshToken;
 import trung.supper.englishgrammar.models.User;
 import trung.supper.englishgrammar.repositorys.IRefreshTokenRepository;
@@ -17,6 +18,7 @@ import trung.supper.englishgrammar.repositorys.IUserRepository;
 import trung.supper.englishgrammar.sercurity.CustomUserDetails;
 import trung.supper.englishgrammar.sercurity.JwtService;
 import trung.supper.englishgrammar.services.IAuthService;
+import trung.supper.englishgrammar.utils.SecurityConstants;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -30,6 +32,7 @@ public class AuthServiceImpl implements IAuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final IRefreshTokenRepository refreshTokenRepository;
+    private final AuthMapper authMapper;
 
     @Override
     public AuthResponse register(RegisterRequest request) {
@@ -37,16 +40,9 @@ public class AuthServiceImpl implements IAuthService {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        User user = User.builder()
-                .email(request.getEmail())
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .phoneNumber(request.getPhoneNumber())
-                .role(trung.supper.englishgrammar.enums.Role.STUDENT)
-                .membershipType(trung.supper.englishgrammar.enums.MembershipType.FREE)
-                .isActive(true)
-                .build();
+        User user = authMapper.toUser(request);
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+
         userRepository.save(user);
 
         return buildAuthTokens(user);
@@ -70,13 +66,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public AuthResponse refresh(String refreshTokenStr) {
-        RefreshToken token = refreshTokenRepository.findByToken(refreshTokenStr)
-                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
-
-        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
-            refreshTokenRepository.delete(token);
-            throw new RuntimeException("Refresh token was expired");
-        }
+        RefreshToken token = validateRefreshToken(refreshTokenStr);
 
         CustomUserDetails userDetails = new CustomUserDetails(token.getUser());
         String newAccessToken = jwtService.generateToken(userDetails);
@@ -94,7 +84,7 @@ public class AuthServiceImpl implements IAuthService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
                 .token(UUID.randomUUID().toString())
-                .expiryDate(Instant.now().plusMillis(604800000L)) // 7 days hardcoded refresh policy
+                .expiryDate(Instant.now().plusMillis(SecurityConstants.REFRESH_TOKEN_EXPIRATION_MS))
                 .build();
         refreshTokenRepository.save(refreshToken);
 
@@ -102,5 +92,16 @@ public class AuthServiceImpl implements IAuthService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken.getToken())
                 .build();
+    }
+
+    private RefreshToken validateRefreshToken(String refreshTokenStr) {
+        RefreshToken token = refreshTokenRepository.findByToken(refreshTokenStr)
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+
+        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+            refreshTokenRepository.delete(token);
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+        return token;
     }
 }
