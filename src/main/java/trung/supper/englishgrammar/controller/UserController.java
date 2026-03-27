@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import trung.supper.englishgrammar.dto.request.ChangePasswordRequest;
 import trung.supper.englishgrammar.dto.request.CreateUserRequest;
 import trung.supper.englishgrammar.dto.response.ApiRespone;
+import trung.supper.englishgrammar.dto.response.MembershipResponse;
 import trung.supper.englishgrammar.dto.response.UserResponse;
 import trung.supper.englishgrammar.services.IUserService;
 
@@ -96,6 +97,24 @@ public class UserController {
         String avatarUrl = userService.uploadAvatar(email, file);
         return ApiRespone.<String>builder()
                 .result(avatarUrl)
+                .code(1000)
+                .message("success")
+                .build();
+    }
+
+    @GetMapping("/me/membership")
+    public ApiRespone<MembershipResponse> getMyMembership() {
+        return ApiRespone.<MembershipResponse>builder()
+                .result(userService.getMyMembership())
+                .code(1000)
+                .message("success")
+                .build();
+    }
+
+    @PostMapping("/me/membership/upgrade")
+    public ApiRespone<MembershipResponse> upgradeMembership() {
+        return ApiRespone.<MembershipResponse>builder()
+                .result(userService.upgradeMembership())
                 .code(1000)
                 .message("success")
                 .build();

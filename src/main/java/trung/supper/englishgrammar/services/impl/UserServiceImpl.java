@@ -2,9 +2,13 @@ package trung.supper.englishgrammar.services.impl;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import trung.supper.englishgrammar.dto.request.ChangePasswordRequest;
 import trung.supper.englishgrammar.dto.request.CreateUserRequest;
+import trung.supper.englishgrammar.dto.response.MembershipResponse;
 import trung.supper.englishgrammar.dto.response.UserResponse;
 import trung.supper.englishgrammar.enums.MembershipType;
 import trung.supper.englishgrammar.enums.Role;
@@ -13,6 +17,7 @@ import trung.supper.englishgrammar.models.User;
 import trung.supper.englishgrammar.repositorys.IUserRepository;
 import trung.supper.englishgrammar.services.ICloudinaryService;
 import trung.supper.englishgrammar.services.IUserService;
+import trung.supper.englishgrammar.utils.MembershipUtils;
 import trung.supper.englishgrammar.enums.ErrorCode;
 import trung.supper.englishgrammar.exception.AppException;
 
@@ -94,7 +99,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void changePassword(String email, trung.supper.englishgrammar.dto.request.ChangePasswordRequest request) {
+    public void changePassword(String email, ChangePasswordRequest request) {
         User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
 
@@ -133,4 +138,24 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
+    @Override
+    public MembershipResponse getMyMembership() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+        return userMapper.toMembershipResponse(user);
+    }
+
+    @Override
+    public MembershipResponse upgradeMembership() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        user.setMembershipType(MembershipType.MEMBERSHIP);
+        user.setMembershipExpiresAt(MembershipUtils.calculateNewExpiry(user));
+
+        userRepository.save(user);
+        return userMapper.toMembershipResponse(user);
+    }
 }
