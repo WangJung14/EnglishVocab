@@ -18,8 +18,16 @@ import trung.supper.englishgrammar.repositorys.IUserRepository;
 import trung.supper.englishgrammar.services.ICloudinaryService;
 import trung.supper.englishgrammar.services.IUserService;
 import trung.supper.englishgrammar.utils.MembershipUtils;
+import trung.supper.englishgrammar.dto.request.UpdateUserRoleRequest;
+import trung.supper.englishgrammar.dto.request.UpdateUserStatusRequest;
 import trung.supper.englishgrammar.enums.ErrorCode;
 import trung.supper.englishgrammar.exception.AppException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.util.Map;
 
 import java.util.List;
 import java.util.UUID;
@@ -120,12 +128,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public String uploadAvatar(String email, org.springframework.web.multipart.MultipartFile file) {
+    public String uploadAvatar(String email, MultipartFile file) {
         User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
 
         try {
-            java.util.Map<?, ?> result = cloudinaryService.uploadFile(file, "avatars");
+            Map<?, ?> result = cloudinaryService.uploadFile(file, "avatars");
             String avatarUrl = (String) result.get("secure_url");
             if (avatarUrl == null)
                 avatarUrl = (String) result.get("url");
@@ -133,7 +141,7 @@ public class UserServiceImpl implements IUserService {
             user.setAvatarUrl(avatarUrl);
             userRepository.save(user);
             return avatarUrl;
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             throw new AppException(ErrorCode.FILE_UPLOAD_FAILED);
         }
     }
@@ -157,5 +165,39 @@ public class UserServiceImpl implements IUserService {
 
         userRepository.save(user);
         return userMapper.toMembershipResponse(user);
+    }
+
+    @Override
+    public Page<UserResponse> getAllUsersPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable)
+                .map(userMapper::toUserResponseDTO);
+    }
+
+    @Override
+    public UserResponse getUserById(java.util.UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+        return userMapper.toUserResponseDTO(user);
+    }
+
+    @Override
+    public UserResponse updateUserRole(java.util.UUID id, UpdateUserRoleRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        user.setRole(request.getRole());
+        userRepository.save(user);
+        return userMapper.toUserResponseDTO(user);
+    }
+
+    @Override
+    public UserResponse updateUserStatus(java.util.UUID id, UpdateUserStatusRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        user.setIsActive(request.getIsActive());
+        userRepository.save(user);
+        return userMapper.toUserResponseDTO(user);
     }
 }
