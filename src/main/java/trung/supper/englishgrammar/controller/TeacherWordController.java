@@ -8,6 +8,12 @@ import trung.supper.englishgrammar.dto.request.WordRequest;
 import trung.supper.englishgrammar.dto.response.ApiRespone;
 import trung.supper.englishgrammar.dto.response.WordResponse;
 import trung.supper.englishgrammar.services.IWordService;
+import trung.supper.englishgrammar.dto.response.BulkImportResponse;
+import trung.supper.englishgrammar.services.IWordImportService;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.util.UUID;
 
@@ -18,6 +24,7 @@ import java.util.UUID;
 public class TeacherWordController {
 
     private final IWordService wordService;
+    private final IWordImportService wordImportService;
 
     @PostMapping
     public ApiRespone<WordResponse> createWord(@Valid @RequestBody WordRequest request) {
@@ -45,5 +52,22 @@ public class TeacherWordController {
                 .code(1000)
                 .message("success")
                 .build();
+    }
+
+    @PostMapping(value = "/bulk-import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiRespone<BulkImportResponse> importWords(@RequestParam("file") MultipartFile file) {
+        return ApiRespone.<BulkImportResponse>builder()
+                .result(wordImportService.importWords(file))
+                .code(1000)
+                .message("success")
+                .build();
+    }
+
+    @GetMapping(value = "/bulk-import/template", produces = "text/csv")
+    public ResponseEntity<byte[]> getTemplate() {
+        byte[] data = wordImportService.generateTemplate();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=word_import_template.csv")
+                .body(data);
     }
 }
