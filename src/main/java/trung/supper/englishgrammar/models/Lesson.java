@@ -45,6 +45,9 @@ public class Lesson {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
+    @Column(nullable = false, length = 255)
+    private String title;
+
     @Column(nullable = false, unique = true, length = 255)
     private String slug;
 
@@ -83,7 +86,7 @@ public class Lesson {
      * 1-1 voi bai doc neu lessontype la reading
      */
     @OneToOne(mappedBy = "lesson", cascade = CascadeType.ALL)
-    private ReadingPassage ReadingPassage;
+    private ReadingPassage readingPassage;
 
     /*
      * 1-N voi danh sach tu vung trong bai

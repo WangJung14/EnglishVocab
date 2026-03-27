@@ -6,6 +6,8 @@ import trung.supper.englishgrammar.dto.response.ApiRespone;
 import trung.supper.englishgrammar.dto.response.TopicResponse;
 import trung.supper.englishgrammar.enums.Level;
 import trung.supper.englishgrammar.services.ITopicService;
+import trung.supper.englishgrammar.dto.response.LessonResponse;
+import trung.supper.englishgrammar.services.ILessonService;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class TopicController {
 
     private final ITopicService topicService;
+    private final ILessonService lessonService;
 
     @GetMapping
     public ApiRespone<List<TopicResponse>> getTopics(
@@ -31,6 +34,15 @@ public class TopicController {
     public ApiRespone<TopicResponse> getTopicBySlug(@PathVariable String slug) {
         return ApiRespone.<TopicResponse>builder()
                 .result(topicService.getTopicBySlug(slug))
+                .code(1000)
+                .message("success")
+                .build();
+    }
+
+    @GetMapping("/{topicSlug}/lessons")
+    public ApiRespone<List<LessonResponse>> getLessonsByTopicSlug(@PathVariable String topicSlug) {
+        return ApiRespone.<List<LessonResponse>>builder()
+                .result(lessonService.getLessonsByTopicSlug(topicSlug))
                 .code(1000)
                 .message("success")
                 .build();
