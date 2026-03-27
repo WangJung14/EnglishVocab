@@ -21,12 +21,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
+    @ExceptionHandler(value = org.springframework.security.core.AuthenticationException.class)
+    public ResponseEntity<ApiRespone<?>> handlingAuthenticationException(org.springframework.security.core.AuthenticationException exception) {
+        ApiRespone<?> apiResponse = ApiRespone.builder()
+                .code(ErrorCode.UNAUTHENTICATED.getCode())
+                .message("Tài khoản hoặc mật khẩu không chính xác")
+                .build();
+        return ResponseEntity.status(ErrorCode.UNAUTHENTICATED.getStatusCode()).body(apiResponse);
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ApiRespone<?>> handlingRuntimeException(Exception exception) {
-        // exception.printStackTrace(); // debug
+        exception.printStackTrace(); // debug
         ApiRespone<?> apiResponse = ApiRespone.builder()
                 .code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
-                .message(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage())
+                .message(exception.getMessage() != null ? exception.getMessage() : ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage())
                 .build();
 
         return ResponseEntity.internalServerError().body(apiResponse);

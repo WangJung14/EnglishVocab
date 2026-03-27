@@ -48,4 +48,25 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/me")
+    public ApiRespone<UserResponse> getMyProfile() {
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        UserResponse userResponse = userService.searchUserByEmail(email);
+        return ApiRespone.<UserResponse>builder()
+                .result(userResponse)
+                .code(1000)
+                .message("success")
+                .build();
+    }
+
+    @PutMapping("/me")
+    public ApiRespone<UserResponse> updateMyProfile(@RequestBody trung.supper.englishgrammar.dto.request.UpdateUserRequest request) {
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        UserResponse userResponse = userService.updateMyProfile(email, request);
+        return ApiRespone.<UserResponse>builder()
+                .result(userResponse)
+                .code(1000)
+                .message("success")
+                .build();
+    }
 }

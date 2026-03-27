@@ -81,11 +81,11 @@ public class AuthServiceImpl implements IAuthService {
         CustomUserDetails userDetails = new CustomUserDetails(user);
         String jwtToken = jwtService.generateToken(userDetails);
 
-        RefreshToken refreshToken = RefreshToken.builder()
-                .user(user)
-                .token(UUID.randomUUID().toString())
-                .expiryDate(Instant.now().plusMillis(SecurityConstants.REFRESH_TOKEN_EXPIRATION_MS))
-                .build();
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user).orElse(new RefreshToken());
+        refreshToken.setUser(user);
+        refreshToken.setToken(UUID.randomUUID().toString());
+        refreshToken.setExpiryDate(Instant.now().plusMillis(SecurityConstants.REFRESH_TOKEN_EXPIRATION_MS));
+        
         refreshTokenRepository.save(refreshToken);
 
         return AuthResponse.builder()

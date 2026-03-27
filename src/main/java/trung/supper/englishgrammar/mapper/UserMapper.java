@@ -10,4 +10,7 @@ public interface UserMapper {
     @Mapping(target = "role", expression = "java(user.getRole().name())")
     @Mapping(target = "membershipType", expression = "java(user.getMembershipType().name())")
     UserResponse toUserResponseDTO(User user);
+
+    @org.mapstruct.BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
+    void updateUser(@org.mapstruct.MappingTarget User user, trung.supper.englishgrammar.dto.request.UpdateUserRequest request);
 }

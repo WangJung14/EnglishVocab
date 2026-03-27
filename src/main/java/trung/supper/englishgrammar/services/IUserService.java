@@ -16,4 +16,6 @@ public interface IUserService {
 
     public UserResponse searchUserByEmail(String email);
 
+    public UserResponse updateMyProfile(String email, trung.supper.englishgrammar.dto.request.UpdateUserRequest request);
+
 }

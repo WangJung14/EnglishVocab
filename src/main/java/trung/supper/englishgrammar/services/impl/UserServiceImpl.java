@@ -76,4 +76,15 @@ public class UserServiceImpl implements IUserService {
         return userMapper.toUserResponseDTO(user);
     }
 
+    @Override
+    public UserResponse updateMyProfile(String email, trung.supper.englishgrammar.dto.request.UpdateUserRequest request) {
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+        
+        userMapper.updateUser(user, request);
+        user = userRepository.save(user);
+        
+        return userMapper.toUserResponseDTO(user);
+    }
+
 }
