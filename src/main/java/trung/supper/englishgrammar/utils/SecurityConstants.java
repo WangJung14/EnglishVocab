@@ -11,7 +11,7 @@ public final class SecurityConstants {
 
     // Auth Routes
     public static final String[] PUBLIC_URLS = {
-            "/api/auth/**",
+            "/auth/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",

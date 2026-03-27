@@ -12,7 +12,7 @@ import trung.supper.englishgrammar.dto.response.AuthResponse;
 import trung.supper.englishgrammar.services.IAuthService;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Endpoints for identifying interacting users, controlling login/registration workflows.")
 public class AuthController {
