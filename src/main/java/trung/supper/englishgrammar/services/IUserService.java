@@ -18,4 +18,7 @@ public interface IUserService {
 
     public UserResponse updateMyProfile(String email, trung.supper.englishgrammar.dto.request.UpdateUserRequest request);
 
+    public void changePassword(String email, trung.supper.englishgrammar.dto.request.ChangePasswordRequest request);
+
+    public String uploadAvatar(String email, org.springframework.web.multipart.MultipartFile file);
 }

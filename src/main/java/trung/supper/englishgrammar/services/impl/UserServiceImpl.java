@@ -1,6 +1,8 @@
 package trung.supper.englishgrammar.services.impl;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import trung.supper.englishgrammar.dto.request.CreateUserRequest;
 import trung.supper.englishgrammar.dto.response.UserResponse;
@@ -9,6 +11,7 @@ import trung.supper.englishgrammar.enums.Role;
 import trung.supper.englishgrammar.mapper.UserMapper;
 import trung.supper.englishgrammar.models.User;
 import trung.supper.englishgrammar.repositorys.IUserRepository;
+import trung.supper.englishgrammar.services.ICloudinaryService;
 import trung.supper.englishgrammar.services.IUserService;
 import trung.supper.englishgrammar.enums.ErrorCode;
 import trung.supper.englishgrammar.exception.AppException;
@@ -23,6 +26,8 @@ public class UserServiceImpl implements IUserService {
 
     private final IUserRepository userRepository;
     private final UserMapper userMapper;
+    private final ICloudinaryService cloudinaryService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse getMyProfile(UUID userId) {
@@ -77,14 +82,55 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserResponse updateMyProfile(String email, trung.supper.englishgrammar.dto.request.UpdateUserRequest request) {
+    public UserResponse updateMyProfile(String email,
+            trung.supper.englishgrammar.dto.request.UpdateUserRequest request) {
         User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
-        
+
         userMapper.updateUser(user, request);
         user = userRepository.save(user);
-        
+
         return userMapper.toUserResponseDTO(user);
+    }
+
+    @Override
+    public void changePassword(String email, trung.supper.englishgrammar.dto.request.ChangePasswordRequest request) {
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
+
+        if (request.getNewPassword().length() < 8) {
+            throw new AppException(ErrorCode.WEAK_PASSWORD);
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    @Override
+    public String uploadAvatar(String email, org.springframework.web.multipart.MultipartFile file) {
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        try {
+            java.util.Map<?, ?> result = cloudinaryService.uploadFile(file, "avatars");
+            String avatarUrl = (String) result.get("secure_url");
+            if (avatarUrl == null)
+                avatarUrl = (String) result.get("url");
+
+            user.setAvatarUrl(avatarUrl);
+            userRepository.save(user);
+            return avatarUrl;
+        } catch (java.io.IOException e) {
+            throw new AppException(ErrorCode.FILE_UPLOAD_FAILED);
+        }
     }
 
 }
