@@ -53,6 +53,9 @@ public class UserLessonProgress {
     @Column(name = "progress_percent")
     private Integer progressPercent = 0; // Từ 0 đến 100
 
+    @Column(name = "started_at")
+    private LocalDateTime startedAt;
+
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
