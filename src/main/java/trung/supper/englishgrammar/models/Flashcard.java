@@ -46,6 +46,9 @@ public class Flashcard {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String back; // Nội dung mặt sau (Câu trả lời/Nghĩa)
 
+    @Column(columnDefinition = "TEXT")
+    private String example;
+
     @Column(name = "order_index")
     private Integer orderIndex;
 
