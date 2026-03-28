@@ -44,6 +44,9 @@ public class ReadingPassage {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column(columnDefinition = "TEXT")
+    private String translation;
+
     @Column(name = "audio_url", columnDefinition = "TEXT")
     private String audioUrl;
 
