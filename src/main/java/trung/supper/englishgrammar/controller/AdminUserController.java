@@ -1,6 +1,8 @@
 package trung.supper.englishgrammar.controller;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import trung.supper.englishgrammar.dto.request.UpdateUserRoleRequest;
@@ -20,10 +22,10 @@ public class AdminUserController {
     private final IUserService userService;
 
     @GetMapping
-    public ApiRespone<org.springframework.data.domain.Page<UserResponse>> getAllUsers(
+    public ApiRespone<Page<UserResponse>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ApiRespone.<org.springframework.data.domain.Page<UserResponse>>builder()
+        return ApiRespone.<Page<UserResponse>>builder()
                 .result(userService.getAllUsersPaginated(page, size))
                 .code(1000)
                 .message("success")
@@ -49,7 +51,8 @@ public class AdminUserController {
     }
 
     @PutMapping("/{id}/status")
-    public ApiRespone<UserResponse> updateUserStatus(@PathVariable UUID id, @RequestBody UpdateUserStatusRequest request) {
+    public ApiRespone<UserResponse> updateUserStatus(@PathVariable UUID id,
+            @RequestBody UpdateUserStatusRequest request) {
         return ApiRespone.<UserResponse>builder()
                 .result(userService.updateUserStatus(id, request))
                 .code(1000)
