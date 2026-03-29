@@ -14,6 +14,10 @@ import java.util.UUID;
 @Repository
 public interface IUserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByEmailIgnoreCase(String email);
+    
+    boolean existsByEmailIgnoreCase(String email);
+    boolean existsByPhoneNumber(String phoneNumber);
+
 
     // User growth — group by date string (MySQL: DATE_FORMAT, JPQL-compatible via FUNCTION)
     @Query(value = "SELECT DATE(u.created_at) AS date, COUNT(u.id) AS newUsers " +

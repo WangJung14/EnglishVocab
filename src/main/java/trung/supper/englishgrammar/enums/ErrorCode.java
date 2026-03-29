@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     USER_NOT_EXIST(1001, "User does not exist", HttpStatus.NOT_FOUND),
-    USER_EXISTED(1002, "User already exists", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(1002, "Email already exists", HttpStatus.BAD_REQUEST),
+    PHONE_EXISTED(1003, "Phone number already exists", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1004, "Account or password is incorrect", HttpStatus.UNAUTHORIZED),
     PASSWORD_NOT_MATCH(1005, "Confirm password does not match", HttpStatus.BAD_REQUEST),
     WEAK_PASSWORD(1006, "Password is too weak (need at least 8 characters)", HttpStatus.BAD_REQUEST),

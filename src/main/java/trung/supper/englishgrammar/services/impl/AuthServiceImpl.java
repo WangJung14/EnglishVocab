@@ -36,8 +36,11 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.findByEmailIgnoreCase(request.getEmail()).isPresent()) {
+        if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
             throw new AppException(ErrorCode.USER_EXISTED);
+        }
+        if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+            throw new AppException(ErrorCode.PHONE_EXISTED);
         }
 
         User user = authMapper.toUser(request);
