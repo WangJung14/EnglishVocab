@@ -67,6 +67,12 @@ public class SQLiteDataReader implements ApplicationRunner {
             printTableCount(connection, "pronunciations");
 
             printSampleWords(connection);
+
+            System.out.println("$$$$$$$$$$$$$");
+            printTableColumns(connection, "words");
+            printTableColumns(connection, "definitions");
+            printTableColumns(connection, "word_definitions");
+            printTableColumns(connection, "pronunciations");
         }
     }
 
@@ -119,6 +125,26 @@ public class SQLiteDataReader implements ApplicationRunner {
                             id, word, language
                     );
                 }
+            }
+        }
+    }
+
+    private void printTableColumns(
+        Connection connection,
+        String tableName
+    )throws Exception {
+        String sql = "PRAGMA table_info(" + tableName + ")";
+        try(Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql)) {
+            System.out.println("#####" + tableName + "####");
+
+            while(rs.next()) {
+                System.out.printf(
+                        "%s | %s | %s%n",
+                        rs.getString("name"),
+                        rs.getString("type"),
+                        rs.getInt("pk") == 1 ? "PRIMARY KEY" : ""
+                );
             }
         }
     }

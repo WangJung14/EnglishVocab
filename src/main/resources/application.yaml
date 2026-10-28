@@ -20,7 +20,10 @@ spring:
 app:
   import:
     sqlite-path: ${SQLITE_DATASET_PATH}
-    preview-enabled: true
+    preview-enabled: false
+    words-enabled : false
+    full-enabled: false
+    batch-size : 500
 
 server:
   port: 8080
