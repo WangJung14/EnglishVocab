@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: englishvocab-backend
@@ -16,6 +15,12 @@ spring:
 
   flyway:
     enabled: true
+
+#import data from SQLite
+app:
+  import:
+    sqlite-path: ${SQLITE_DATASET_PATH}
+    preview-enabled: true
 
 server:
   port: 8080
