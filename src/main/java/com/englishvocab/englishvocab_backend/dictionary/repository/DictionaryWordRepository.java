@@ -6,9 +6,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DictionaryWordRepository extends JpaRepository<DictionaryWord, Long> {
-    Optional<DictionaryWord> findByWord(String word);
-    Page<DictionaryWord> findByWordStartingWithIgnoreCase(String prefix, Pageable pageable);
+    Page<DictionaryWord> findByWordStartingWithIgnoreCase(
+            String prefix,
+            Pageable pageable
+    );
+
+    List<DictionaryWord> findAllByWordOrderByIdAsc(
+            String word
+    );
 }
